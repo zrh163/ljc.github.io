@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法庭意见书交互网页</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        /* 标题样式 */
+        .level1-title {
+            font-size: 1.8rem;
+            color: #0d6efd;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+            margin: 30px 0 20px;
+        }
+        .level2-title {
+            font-size: 1.4rem;
+            color: #212529;
+            margin: 25px 0 15px;
+        }
+        /* 导航栏样式 */
+        .nav-pills .nav-link {
+            color: #0d6efd;
+            border-radius: 0.5rem;
+            margin: 0 5px;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        /* 表格样式 */
+        .knowledge-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .knowledge-table th, .knowledge-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        .knowledge-table th {
+            background-color: #e9f2ff;
+            color: #0d6efd;
+        }
+        .knowledge-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        /* 术语弹窗样式 */
+        .term-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            padding: 25px;
+            z-index: 1000;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .term-modal-title {
+            font-size: 1.5rem;
+            color: #0d6efd;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+        }
+        .close-modal:hover {
+            color: #000;
+        }
+        /* 复制按钮样式 */
+        .copy-btn {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #0b5ed7;
+        }
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .knowledge-table {
+                font-size: 0.9rem;
+            }
+            .knowledge-table th, .knowledge-table td {
+                padding: 8px 10px;
+            }
+            .term-modal {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <h1 class="text-center text-primary mb-4">法庭意见书交互学习网页</h1>
+
+        <!-- 导航栏 -->
+        <ul class="nav nav-pills justify-content-center mb-5" id="content-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="pill" href="#designer">（一）设计者信息</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="pill" href="#case-elements">（二）法庭意见书要素</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="pill" href="#bilingual-lib">（三）双语知识库</a>
+            </li>
+        </ul>
+
+        <!-- 内容区域 -->
+        <div class="tab-content" id="content-tab-content">
+            <!-- 1. 设计者信息 -->
+            <div class="tab-pane fade show active" id="designer">
+                <h2 class="level1-title">（一）设计者：刘纪呈</h2>
+                <h3 class="level2-title">1．设计工具、方法、过程</h3>
+                <div class="ms-3">
+                    <h4 class="text-primary mt-3">设计工具</h4>
+                    <p>采用“前端三剑客”（HTML5+CSS3+JavaScript）搭建基础框架，结合Bootstrap 5实现响应式布局，确保在手机、平板、电脑等设备上均能流畅显示；使用Figma进行界面原型设计，确定色彩搭配（以蓝色系为主，体现法律的严谨性）与交互逻辑；引入Font Awesome图标库丰富页面视觉元素，提升用户体验。</p>
+
+                    <h4 class="text-primary mt-3">设计方法</h4>
+                    <p>以“用户学习需求”为核心，采用“分层呈现法”——基础内容（如法庭意见书要素、双语知识库）直接展示，深层内容（如术语拓展解释、案例细节弹窗）通过点击、悬浮等交互触发；同时运用“对比呈现法”，在双语知识库中通过左右分栏，同步展示英文术语/短语/句型与中文翻译及解析，降低学习难度。</p>
+
+                    <h4 class="text-primary mt-3">设计过程</h4>
+                    <ol class="list-group list-group-numbered ms-4">
+                        <li class="list-group-item">需求分析：梳理法庭意见书的核心要素与用户（法律学习者）的学习痛点，明确“展示清晰、交互便捷、重点突出”的设计目标；</li>
+                        <li class="list-group-item">原型搭建：在Figma中绘制网页首页、要素详情页、知识库页面的线框图，确定导航栏、内容区、交互按钮的位置与样式；</li>
+                        <li class="list-group-item">代码开发：先完成HTML结构搭建，再通过CSS3实现页面美化（如阴影效果、渐变背景、hover动画），最后用JavaScript编写交互功能（如要素切换标签、术语点击弹窗解释、句型复制功能）；</li>
+                        <li class="list-group-item">测试优化：在不同设备与浏览器中测试页面兼容性，根据测试结果调整字体大小、按钮间距等细节，确保交互流畅性与内容可读性。</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 2. 法庭意见书要素 -->
+            <div class="tab-pane fade" id="case-elements">
+                <h2 class="level1-title">（二）法庭意见书要素（英文）</h2>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">1. Nature of Case</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>A constitutional law case challenging the constitutionality of U.S. federal statutes (37 U.S.C. §§ 401, 403; 10 U.S.C. §§ 1072, 1076) that impose different dependency requirements for military fringe benefits (quarters allowances, medical/dental benefits) on servicewomen and servicemen, alleging sex-based discrimination in violation of the Due Process Clause of the Fifth Amendment.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">2. Concise Rule of Law</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Classifications based on sex, similar to those based on race, alienage, and national origin, are inherently suspect and subject to strict judicial scrutiny. A statutory scheme that treats similarly situated men and women differently solely for administrative convenience fails strict judicial scrutiny and violates the Due Process Clause of the Fifth Amendment.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">3. Facts</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-disc ms-5">
+                            <li>Sharron Frontiero, a U.S. Air Force lieutenant (servicewoman), sought increased quarters allowances and medical benefits for her husband, Joseph Frontiero, claiming he was her "dependent" under relevant federal statutes.</li>
+                            <li>Under the statutes, servicemen could claim their wives as "dependents" without proving actual dependency, while servicewomen could only claim their husbands as "dependents" if they proved the husband relied on them for over half his support.</li>
+                            <li>Frontiero’s application was denied because she could not meet the dependency proof requirement. She sued, arguing the statutes discriminated based on sex.</li>
+                            <li>The Middle District of Alabama (three-judge court) upheld the statutes’ constitutionality (one judge dissented), and Frontiero appealed to the U.S. Supreme Court.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">4. Issue</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Whether the differential dependency requirements for military fringe benefits—requiring servicewomen to prove their husbands’ actual dependency while exempting servicemen from proving their wives’ dependency—constitute unconstitutional sex discrimination in violation of the Due Process Clause of the Fifth Amendment.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">5. Holding</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Yes. Classifications based on sex are inherently suspect and require strict judicial scrutiny. The challenged statutes treat similarly situated servicewomen and servicemen differently solely for "administrative convenience," which does not satisfy strict judicial scrutiny. The differential treatment violates the Due Process Clause of the Fifth Amendment.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="level2-title mb-0">6. Decision</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>The U.S. Supreme Court reversed the judgment of the Middle District of Alabama, declaring the challenged federal statutes (37 U.S.C. §§ 401, 403; 10 U.S.C. §§ 1072, 1076) unconstitutional due to sex-based discrimination.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 双语知识库 -->
+            <div class="tab-pane fade" id="bilingual-lib">
+                <h2 class="level1-title">（三）双语知识库</h2>
+
+                <!-- 3.1 重要术语 -->
+                <h3 class="level2-title">1. 20个重要术语（英文-中文-解析）</h3>
+                <table class="knowledge-table">
+                    <thead>
+                        <tr>
+                            <<th>英文术语</</th>
+                            <<th>中文翻译</</th>
+                            <<th>解析</</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="term-link" data-term="Due Process Clause">Due Process Clause</span></td>
+                            <td>正当程序条款</td>
+                            <td>美国宪法中的核心条款（第五修正案适用于联邦政府，第十四修正案适用于州政府），要求政府行为必须遵循公平、公正的法律程序，不得随意剥夺公民的生命、自由或财产。本案中，原告以该条款为由主张性别歧视违法。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Inherently Suspect Classification">Inherently Suspect Classification</span></td>
+                            <td>固有可疑分类</td>
+                            <td>指基于种族、国籍、外国人身份等特征的法律分类，此类分类被推定为违宪，除非政府能通过严格司法审查（证明分类服务于紧迫的政府利益且手段必要）。本案中，法院认定“基于性别的分类”也属于此类。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Strict Judicial Scrutiny">Strict Judicial Scrutiny</span></td>
+                            <td>严格司法审查</td>
+                            <td>美国宪法审查中的最高标准，适用于固有可疑分类或涉及基本权利的案件。政府需证明被挑战的法律/政策：1. 服务于紧迫的政府利益；2. 所采用的手段与该利益存在紧密关联且无其他更少限制的替代方案。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Fringe Benefits">Fringe Benefits</span></td>
+                            <td>附加福利</td>
+                            <td>指除基本工资外，雇主（本案中为美国政府）为员工提供的额外福利，如住房补贴、医疗保健、牙科护理等。本案争议核心即围绕军人附加福利的获取条件展开。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Dependency Requirement">Dependency Requirement</span></td>
+                            <td>扶养证明要求</td>
+                            <td>指获取特定福利时，需证明受益人（如本案中的军人配偶）对申请人存在经济依赖的法律条件。本案中，男女军人的扶养证明要求存在差异，是歧视的直接体现。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Statutory Scheme">Statutory Scheme</span></td>
+                            <td>成文法体系</td>
+                            <td>指由立法机关制定的、相互关联的一系列法律条款的整体，而非单一法条。本案中，法院审查的是37 U.S.C.与10 U.S.C.中关于军人福利的多个条款共同构成的成文法体系。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Appellate Jurisdiction">Appellate Jurisdiction</span></td>
+                            <td>上诉管辖权</td>
+                            <td>指上级法院（如最高法院）审查下级法院（如地区法院）判决的权力。本案中，美国最高法院对地区法院的判决行使上诉管辖权，并最终推翻了下级法院的裁定。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Dissenting Opinion">Dissenting Opinion</span></td>
+                            <td>异议意见</td>
+                            <td>指法院判决中，不同意多数法官结论的法官所撰写的书面意见，阐述其反对理由。本案中，地区法院有1名法官提出异议，最高法院大法官Rehnquist也提交了异议意见。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Concurring Opinion">Concurring Opinion</span></td>
+                            <td>协同意见</td>
+                            <td>指法官同意多数法官的判决结果，但不同意其推理过程或法律理由，而单独撰写的意见。本案中，大法官Stewart、Powell等提交了协同意见，支持判决结果但对“性别作为固有可疑分类”的观点持保留态度。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Probate Court">Probate Court</span></td>
+                            <td>遗嘱认证法院</td>
+                            <td>专门处理遗产分配、遗嘱有效性、监护人任命等事务的法院。本案在引用Reed v. Reed案时提及该法院，该案涉及遗嘱认证法院对遗产管理人任命的性别偏好。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Civil Rights Act of 1964">Civil Rights Act of 1964</span></td>
+                            <td>1964年民权法案</td>
+                            <td>美国历史上重要的民权立法，禁止在就业、公共设施使用、教育等领域基于种族、肤色、宗教、性别或国籍的歧视。本案中，法院引用该法案证明国会已意识到性别歧视的危害性。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Equal Pay Act of 1963">Equal Pay Act of 1963</span></td>
+                            <td>1963年同酬法案</td>
+                            <td>美国联邦法律，要求雇主对从事同等工作的男女员工支付同等报酬，禁止基于性别的薪酬歧视。本案中，法院以该法案为例，说明立法层面对性别平等的推动。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Equal Rights Amendment (ERA)">Equal Rights Amendment (ERA)</span></td>
+                            <td>平等权利修正案</td>
+                            <td>旨在确保美国宪法下男女权利完全平等的修正案，1972年由国会通过并提交各州批准，但因未达到批准州数而未生效。本案中，大法官Powell认为应等待该修正案的立法进程，而非由法院提前认定性别为固有可疑分类。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Uniformed Services">Uniformed Services</span></td>
+                            <td>制服服务部门</td>
+                            <td>指美国穿着统一制服的军事及准军事部门，包括陆军、海军、空军、海军陆战队、海岸警卫队等。本案中，福利政策的适用对象即为这些部门的军人。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Basic Allowance for Quarters (BAQ)">Basic Allowance for Quarters (BAQ)</span></td>
+                            <td>基本住房补贴</td>
+                            <td>美国军方为有家属的军人提供的住房费用补贴，金额根据军人军衔、家属数量等因素确定。本案中，原告申请的“increased quarters allowances”即属于此类补贴的增加部分。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Administrative Convenience">Administrative Convenience</span></td>
+                            <td>行政便利性</td>
+                            <td>指政府为简化行政流程、降低行政成本而采取的便捷措施。本案中，政府主张性别差异化的扶养要求是为了行政便利，但法院认为该理由无法通过严格司法审查。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Class Action">Class Action</span></td>
+                            <td>集体诉讼</td>
+                            <td>指由一名或多名原告代表具有相同利益的群体（集体）提起的诉讼，判决结果对全体集体成员具有约束力。本案虽非集体诉讼，但涉及所有女性军人的共同利益。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Precedent">Precedent</span></td>
+                            <td>先例</td>
+                            <td>指法院先前作出的判决，对后续类似案件具有约束力（遵循先例原则）。本案中，法院多次引用Reed v. Reed案（1971年）作为认定性别歧视违法的先例。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Petitioner">Petitioner</span></td>
+                            <td>请愿人</td>
+                            <td>在上诉案件中，向上级法院提出上诉、请求推翻下级法院判决的一方当事人。本案中，原告Frontiero夫妇即为向最高法院提起上诉的请愿人。</td>
+                        </tr>
+                        <tr>
+                            <td><span class="term-link" data-term="Respondent">Respondent</span></td>
+                            <td>被请愿人</td>
+                            <td>在上诉案件中，回应请愿人上诉、维护下级法院判决的一方当事人。本案中，美国国防部长等政府官员即为被请愿人。</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 3.2 短语 -->
+                <h3 class="level2-title mt-5">2. 10个短语（英文-中文-场景应用）</h3>
+                <table class="knowledge-table">
+                    <thead>
+                        <tr>
+                            <<th>英文短语</</th>
+                            <<th>中文翻译</</th>
+                            <<th>场景应用</</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on an equal footing with</td>
+                            <td>与……处于平等地位</td>
+                            <td>本案原文：“obtaining increased quarters allowances... on an equal footing with male members”（与男性军人平等获得增加的住房补贴……），用于描述女性军人主张的平等权利诉求。</td>
+                        </tr>
+                        <tr>
+                            <td>without regard to</td>
+                            <td>无论；不考虑</td>
+                            <td>本案原文：“a serviceman may claim his wife as a ‘dependent’ without regard to whether she is in fact dependent”（男性军人可将妻子列为“受扶养人”，无论其是否实际依赖自己），用于说明男性军人获取福利的无附加条件。</td>
+                        </tr>
+                        <tr>
+                            <td>in fact</td>
+                            <td>实际上；事实上</td>
+                            <td>本案原文：“unless he is in fact dependent upon her for over one-half of his support”（除非其丈夫实际上依赖她超过一半的生活支持），用于强调女性军人获取福利的“实际依赖”要求，与男性的“推定依赖”形成对比。</td>
+                        </tr>
+                        <tr>
+                            <td>shed light on</td>
+                            <td>阐明；解释</td>
+                            <td>本案原文：“the legislative history of these statutes sheds virtually no light on the purposes”（这些成文法的立法史几乎未阐明其立法目的），用于说明法院在审查法律时，无法从立法背景中找到合理的差异化理由。</td>
+                        </tr>
+                        <tr>
+                            <td>on the ground that</td>
+                            <td>基于……理由；以……为依据</td>
+                            <td>本案原文：“sought... benefits for her husband... on the ground that he was her ‘dependent’”（为其丈夫申请……福利，依据是他是她的“受扶养人”），用于表述原告提起申请或诉讼的核心依据。</td>
+                        </tr>
+                        <tr>
+                            <td>in violation of</td>
+                            <td>违反；违背</td>
+                            <td>本案原文：“contending that... the statutes unreasonably discriminate... in violation of the Due Process Clause”（主张……该成文法存在不合理的性别歧视，违反了正当程序条款），用于指控某行为或法律违反宪法或法律规定。</td>
+                        </tr>
+                        <tr>
+                            <td>in essence</td>
+                            <td>本质上；实质上</td>
+                            <td>本案原文：“In essence, appellants asserted that the discriminatory impact of the statutes is twofold”（本质上，上诉人主张该成文法的歧视影响体现在两方面），用于概括核心观点或事实本质。</td>
+                        </tr>
+                        <tr>
+                            <td>subject to</td>
+                            <td>受……约束；服从于</td>
+                            <td>本案原文：“classifications based upon sex... must therefore be subjected to close judicial scrutiny”（基于性别的分类……因此必须接受严格的司法审查），用于说明某事物需遵循特定规则或接受特定审查。</td>
+                        </tr>
+                        <tr>
+                            <td>with respect to</td>
+                            <td>关于；就……而言</td>
+                            <td>本案原文：“the dependency determination with respect to the husbands of female members”（关于女性军人丈夫的扶养认定），用于引出具体的讨论对象或范围。</td>
+                        </tr>
+                        <tr>
+                            <td>in light of</td>
+                            <td>鉴于；考虑到</td>
+                            <td>本案原文：“in light of the fact that the dependency determination... is presently made solely on the basis of affidavits”（鉴于目前对女性军人丈夫的扶养认定仅基于书面陈述），用于引导出考虑的事实或背景。</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 3.3 句型 -->
+                <h3 class="level2-title mt-5">3. 5个典型句型（英文-中文-句型解析-应用拓展）</h3>
+                <table class="knowledge-table">
+                    <thead>
+                        <tr>
+                            <<th>英文句型</</th>
+                            <<th>中文翻译</</th>
+                            <<th>句型解析</</th>
+                            <<th>应用拓展</</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                The question for decision is whether [X] constitutes an unconstitutional [Y] in violation of [Z].
+                                <button class="btn btn-sm btn-primary copy-btn" onclick="copySentence(this)">复制</button>
+                            </td>
+                            <td>本案待决问题是，[X]是否构成违宪的[Y]，从而违反了[Z]。</td>
+                            <td>该句型为法庭意见书开篇常用句型，用于明确案件的核心争议焦点，结构为“待决问题+行为性质+违反的法律依据”，逻辑清晰，重点突出。</td>
+                            <td>应用场景：在法律文书（如起诉状、上诉状）的“诉讼请求”或“争议焦点”部分使用，例如：“The question for decision is whether the company’s refusal to hire pregnant women constitutes an unconstitutional discrimination in violation of the Equal Employment Opportunity Act.”（本案待决问题是，该公司拒绝雇佣孕妇的行为是否构成违宪歧视，从而违反了《平等就业机会法》。）</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                [Court] held that [X] was unconstitutional because [Y], as it [Z].
+                                <button class="btn btn-sm btn-primary copy-btn" onclick="copySentence(this)">复制</button>
+                            </td>
+                            <td>[法院]认为[X]违宪，因为[Y]，其具体表现为[Z]。</td>
+                            <td>该句型用于阐述法院的核心判决理由，结构为“法院主体+判决结论+理由1+理由2（具体表现）”，层层递进，既明确结论，又详细说明依据，增强说服力。</td>
+                            <td>应用场景：在法律案例分析或判决摘要中使用，例如：“The Supreme Court held that the state’s voter ID law was unconstitutional because it imposed an undue burden on minority voters, as it required documents that many low-income minorities could not easily obtain.”（最高法院认为，该州的选民身份证法违宪，因为它给少数族裔选民施加了不合理的负担，具体表现为要求提供许多低收入少数族裔难以获取的文件。）</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Although [Party A] contended that [X], the Court rejected this contention, concluding that [Y].
+                                <button class="btn btn-sm btn-primary copy-btn" onclick="copySentence(this)">复制</button>
+                            </td>
+                            <td>尽管[甲方]主张[X]，但法院驳回了该主张，认为[Y]。</td>
+                            <td>该句型用于对比双方观点与法院立场，结构为“一方主张+法院否定+法院观点”，通过转折关系突出法院的独立判断，体现司法审查的客观性。</td>
+                            <td>应用场景：在法庭辩论总结或判决理由部分使用，例如：“Although the government contended that the surveillance program was necessary for national security, the Court rejected this contention, concluding that it violated citizens’ right to privacy without proper judicial authorization.”（尽管政府主张该监控计划对国家安全必要，但法院驳回了该主张，认为其在缺乏适当司法授权的情况下侵犯了公民的隐私权。）</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Classifications based on [X], like those based on [Y], are inherently suspect and must therefore be subjected to [Z].
+                                <button class="btn btn-sm btn-primary copy-btn" onclick="copySentence(this)">复制</button>
+                            </td>
+                            <td>基于[X]的分类，与基于[Y]的分类类似，属于固有可疑分类，因此必须接受[Z]（审查）。</td>
+                            <td>该句型用于法律分类的性质认定，通过“类比+结论+法律后果”的结构，将争议分类与已确立的法律分类（如种族分类）对比，推导其应适用的审查标准。</td>
+                            <td>应用场景：在宪法平等权案件的法律分析中使用，例如：“Classifications based on sexual orientation, like those based on race, are inherently suspect and must therefore be subjected to strict judicial scrutiny.”（基于性取向的分类，与基于种族的分类类似，属于固有可疑分类，因此必须接受严格司法审查。）</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                It is unnecessary for [Court] in this case to [X], as [Y] suffices to support the decision.
+                                <button class="btn btn-sm btn-primary copy-btn" onclick="copySentence(this)">复制</button>
+                            </td>
+                            <td>本案中，[法院]无需[X]，因为[Y]已足以支持判决结论。</td>
+                            <td>该句型用于表达法院的“司法克制”立场，即避免对不必要的法律问题作出判断，仅基于现有充分依据作出判决，结构为“法院行为（无需做）+理由（现有依据充分）”，体现司法效率与审慎性。</td>
+                            <td>应用场景：在法院协同意见或异议意见中使用，例如：“It is unnecessary for the Court in this case to define the scope of ‘freedom of speech’ broadly, as the specific facts of this case—defamatory statements—suffice to support the decision.”（本案中，法院无需宽泛界定“言论自由”的范围，因为本案的具体事实——诽谤性言论——已足以支持判决结论。）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 术语弹窗 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="term-modal" id="termModal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <h3 class="term-modal-title" id="termModalTitle"></h3>
+        <div id="termModalContent"></div>
+    </div>
+
+    <!-- 引入Bootstrap和JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 术语弹窗功能
+        const termLinks = document.querySelectorAll('.term-link');
+        const termModal = document.getElementById('termModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModal = document.getElementById('closeModal');
+        const termModalTitle = document.getElementById('termModalTitle');
+        const termModalContent = document.getElementById('termModalContent');
+
+        // 术语数据（匹配表格中的术语及解析）
+        const termData = {
+            "Due Process Clause": {
+                "cn": "正当程序条款",
+                "desc": "美国宪法中的核心条款（第五修正案适用于联邦政府，第十四修正案适用于州政府），要求政府行为必须遵循公平、公正的法律程序，不得随意剥夺公民的生命、自由或财产。本案中，原告以该条款为由主张性别歧视违法。"
+            },
+            "Inherently Suspect Classification": {
+                "cn": "固有可疑分类",
+                "desc": "指基于种族、国籍、外国人身份等特征的法律分类，此类分类被推定为违宪，除非政府能通过严格司法审查（证明分类服务于紧迫的政府利益且手段必要）。本案中，法院认定“基于性别的分类”也属于此类。"
+            },
+            "Strict Judicial Scrutiny": {
+                "cn": "严格司法审查",
+                "desc": "美国宪法审查中的最高标准，适用于固有可疑分类或涉及基本权利的案件。政府需证明被挑战的法律/政策：1. 服务于紧迫的政府利益；2. 所采用的手段与该利益存在紧密关联且无其他更少限制的替代方案。"
+            },
+            "Fringe Benefits": {
+                "cn": "附加福利",
+                "desc": "指除基本工资外，雇主（本案中为美国政府）为员工提供的额外福利，如住房补贴、医疗保健、牙科护理等。本案争议核心即围绕军人附加福利的获取条件展开。"
+            },
+            "Dependency Requirement": {
+                "cn": "扶养证明要求",
+                "desc": "指获取特定福利时，需证明受益人（如本案中的军人配偶）对申请人存在经济依赖的法律条件。本案中，男女军人的扶养证明要求存在差异，是歧视的直接体现。"
+            },
+            "Statutory Scheme": {
+                "cn": "成文法体系",
+                "desc": "指由立法机关制定的、相互关联的一系列法律条款的整体，而非单一法条。本案中，法院审查的是37 U.S.C.与10 U.S.C.中关于军人福利的多个条款共同构成的成文法体系。"
+            },
+            "Appellate Jurisdiction": {
+                "cn": "上诉管辖权",
+                "desc": "指上级法院（如最高法院）审查下级法院（如地区法院）判决的权力。本案中，美国最高法院对地区法院的判决行使上诉管辖权，并最终推翻了下级法院的裁定。"
+            },
+            "Dissenting Opinion": {
+                "cn": "异议意见",
+                "desc": "指法院判决中，不同意多数法官结论的法官所撰写的书面意见，阐述其反对理由。本案中，地区法院有1名法官提出异议，最高法院大法官Rehnquist也提交了异议意见。"
+            },
+            "Concurring Opinion": {
+                "cn": "协同意见",
+                "desc": "指法官同意多数法官的判决结果，但不同意其推理过程或法律理由，而单独撰写的意见。本案中，大法官Stewart、Powell等提交了协同意见，支持判决结果但对“性别作为固有可疑分类”的观点持保留态度。"
+            },
+            "Probate Court": {
+                "cn": "遗嘱认证法院",
+                "desc": "专门处理遗产分配、遗嘱有效性、监护人任命等事务的法院。本案在引用Reed v. Reed案时提及该法院，该案涉及遗嘱认证法院对遗产管理人任命的性别偏好。"
+            },
+            "Civil Rights Act of 1964": {
+                "cn": "1964年民权法案",
+                "desc": "美国历史上重要的民权立法，禁止在就业、公共设施使用、教育等领域基于种族、肤色、宗教、性别或国籍的歧视。本案中，法院引用该法案证明国会已意识到性别歧视的危害性。"
+            },
+            "Equal Pay Act of 1963": {
+                "cn": "1963年同酬法案",
+                "desc": "美国联邦法律，要求雇主对从事同等工作的男女员工支付同等报酬，禁止基于性别的薪酬歧视。本案中，法院以该法案为例，说明立法层面对性别平等的推动。"
+            },
+            "Equal Rights Amendment (ERA)": {
+                "cn": "平等权利修正案",
+                "desc": "旨在确保美国宪法下男女权利完全平等的修正案，1972年由国会通过并提交各州批准，但因未达到批准州数而未生效。本案中，大法官Powell认为应等待该修正案的立法进程，而非由法院提前认定性别为固有可疑分类。"
+            },
+            "Uniformed Services": {
+                "cn": "制服服务部门",
+                "desc": "指美国穿着统一制服的军事及准军事部门，包括陆军、海军、空军、海军陆战队、海岸警卫队等。本案中，福利政策的适用对象即为这些部门的军人。"
+            },
+            "Basic Allowance for Quarters (BAQ)": {
+                "cn": "基本住房补贴",
+                "desc": "美国军方为有家属的军人提供的住房费用补贴，金额根据军人军衔、家属数量等因素确定。本案中，原告申请的“increased quarters allowances”即属于此类补贴的增加部分。"
+            },
+            "Administrative Convenience": {
+                "cn": "行政便利性",
+                "desc": "指政府为简化行政流程、降低行政成本而采取的便捷措施。本案中，政府主张性别差异化的扶养要求是为了行政便利，但法院认为该理由无法通过严格司法审查。"
+            },
+            "Class Action": {
+                "cn": "集体诉讼",
+                "desc": "指由一名或多名原告代表具有相同利益的群体（集体）提起的诉讼，判决结果对全体集体成员具有约束力。本案虽非集体诉讼，但涉及所有女性军人的共同利益。"
+            },
+            "Precedent": {
+                "cn": "先例",
+                "desc": "指法院先前作出的判决，对后续类似案件具有约束力（遵循先例原则）。本案中，法院多次引用Reed v. Reed案（1971年）作为认定性别歧视违法的先例。"
+            },
+            "Petitioner": {
+                "cn": "请愿人",
+                "desc": "在上诉案件中，向上级法院提出上诉、请求推翻下级法院判决的一方当事人。本案中，原告Frontiero夫妇即为向最高法院提起上诉的请愿人。"
+            },
+            "Respondent": {
+                "cn": "被请愿人",
+                "desc": "在上诉案件中，回应请愿人上诉、维护下级法院判决的一方当事人。本案中，美国国防部长等政府官员即为被请愿人。"
+            }
+        };
+
+        // 打开弹窗
+        termLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const term = link.getAttribute('data-term');
+                const data = termData[term];
+                if (data) {
+                    termModalTitle.textContent = `${term}（${data.cn}）`;
+                    termModalContent.innerHTML = `<p>${data.desc}</p>`;
+                    termModal.style.display = 'block';
+                    modalOverlay.style.display = 'block';
+                }
+            });
+        });
+
+        // 关闭弹窗
+        closeModal.addEventListener('click', () => {
+            termModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        });
+
+        modalOverlay.addEventListener('click', () => {
+            termModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        });
+
+        // 复制句型功能
+        function copySentence(btn) {
+            const sentence = btn.parentElement.firstChild.textContent.trim();
+            navigator.clipboard.writeText(sentence).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '已复制！';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败：', err);
+                btn.textContent = '复制失败';
+                setTimeout(() => {
+                    btn.textContent = '复制';
+                }, 2000);
+            });
+        }
+
+        // 导航栏切换高亮
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
